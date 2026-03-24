@@ -100,7 +100,6 @@ public class PlayerMovement : MonoBehaviour
             canJump = false;
             jumpRequest = false;
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-            Debug.Log(canJump);
         }
 
         //execute movement

@@ -1,0 +1,43 @@
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager instance;
+    private Camera playerCamera;
+
+    private const string TARGET_TAG = "Target";
+    private LayerMask TARGET_LAYER;
+
+    public string getTargetTag => TARGET_TAG;
+    public int getTargetLayer => TARGET_LAYER;
+    public Camera getCamera => playerCamera;    
+    
+    public void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+            TARGET_LAYER = LayerMask.GetMask("Target");
+        }
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public void Start()
+    {
+        playerCamera = FindAnyObjectByType<Camera>();
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    
+}
