@@ -7,13 +7,19 @@ public class Pistol : Gun
 {
     [SerializeField] private float _maxDistance;
     [SerializeField] private float _damage;
+    [SerializeField] private GameObject _muzzleEffect;
+    [SerializeField] private GameObject _barrel;
     public override float maxDistance { get; set; }
     public override float damage { get; set; }
+    public override GameObject muzzleEffect { get; set; }
+    public override GameObject barrel { get; set; }
 
     public void Start()
     {
-        maxDistance = _maxDistance;
+        maxDistance = _maxDistance; 
         damage = _damage;
+        muzzleEffect = _muzzleEffect;
+        barrel = _barrel;
         base.Start();
     }
 
@@ -21,20 +27,22 @@ public class Pistol : Gun
     {
         {
             RaycastHit hit;
-            GameObject targetHit;
-            if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, maxDistance, targetLayer))
-            {
-                targetHit = hit.collider.gameObject;
-                Debug.Log("targetHit");
+            int mask = ~(1 << LayerMask.NameToLayer("Player"));
+            bool anythingHit = Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, maxDistance, mask);
 
-                if (targetHit.CompareTag(targetTag) && targetHit.TryGetComponent<Target>(out Target target))
+            if (anythingHit)
+            {
+                if (hit.collider.gameObject.CompareTag(targetTag) && hit.collider.gameObject.TryGetComponent<Target>(out Target target))
                 {
-                    Debug.Log(target);
                     target.TakeDamage(damage);
                 }
-                Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * maxDistance, Color.red, 2f);
-                Debug.Log($"Hit: {hit.collider.gameObject.name} | Layer: {hit.collider.gameObject.layer} | Tag: {hit.collider.tag}");
+
+                GameObject effect = Instantiate(_muzzleEffect, hit.point + hit.normal * 0.05f, Quaternion.LookRotation(hit.normal));
+                Debug.Log(hit.point);
+                effect.SetActive(true);
             }
+
         }
     }
 }
+ 

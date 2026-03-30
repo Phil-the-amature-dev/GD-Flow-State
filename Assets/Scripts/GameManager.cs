@@ -8,9 +8,11 @@ public class GameManager : MonoBehaviour
 
     private const string TARGET_TAG = "Target";
     private LayerMask TARGET_LAYER;
+    private LayerMask PLAYER_LAYER;
 
     public string getTargetTag => TARGET_TAG;
     public int getTargetLayer => TARGET_LAYER;
+    public int getPlayerLayer => PLAYER_LAYER;
     public Camera getCamera => playerCamera;    
     
     public void Awake()
@@ -23,6 +25,7 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             TARGET_LAYER = LayerMask.GetMask("Target");
+            PLAYER_LAYER = LayerMask.GetMask("Player");
         }
     }
 
