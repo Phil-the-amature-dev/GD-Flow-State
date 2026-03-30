@@ -2,11 +2,16 @@ using UnityEngine;
 
 public abstract class Gun : MonoBehaviour
 {
-    private Transform Barrel;
+    private float lastShotframe;
+    private bool canShoot = true;
+    private System.Action runShootMethod;
+
     public Camera playerCamera;
     public LayerMask targetLayer;
     public LayerMask playerLayer;
     public string targetTag;
+    public float shotDelay;
+    public bool automatic;
     public abstract float maxDistance { get; set; }
     public abstract float damage { get; set; }
 
@@ -22,17 +27,38 @@ public abstract class Gun : MonoBehaviour
         targetLayer = GameManager.instance.getTargetLayer;
         playerLayer = GameManager.instance.getPlayerLayer;
         targetTag = GameManager.instance.getTargetTag;
+        runShootMethod = automatic ? automaticFire : semiAutoFire;
         targetLayer = targetLayer & ~(LayerMask.GetMask("Player")); // excludes player layer from the layermask so that it's not detected when commiting a raycast
     }
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            Shoot();
-        }
+        canShoot = (Time.time - lastShotframe > shotDelay);
+        runShootMethod();
     }
 
 
     public abstract void Shoot();
+
+    public void automaticFire()
+    {
+        if (canShoot && Input.GetKey(KeyCode.Mouse0))
+        {
+            Shoot();
+            lastShotframe = Time.time;
+        }
+       
+    }
+
+    public void semiAutoFire()
+    {
+        if (canShoot && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            Shoot();
+            lastShotframe = Time.time;
+        }
+
+    }
+
+
 }

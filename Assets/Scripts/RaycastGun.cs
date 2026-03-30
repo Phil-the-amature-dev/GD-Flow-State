@@ -3,12 +3,13 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
-public class Pistol : Gun
+public class RaycastGun : Gun
 {
     [SerializeField] private float _maxDistance;
     [SerializeField] private float _damage;
     [SerializeField] private GameObject _muzzleEffect;
     [SerializeField] private GameObject _barrel;
+    [SerializeField] private Vector2 spreadOffsets;
     public override float maxDistance { get; set; }
     public override float damage { get; set; }
     public override GameObject muzzleEffect { get; set; }
@@ -27,8 +28,10 @@ public class Pistol : Gun
     {
         {
             RaycastHit hit;
-            int mask = ~(1 << LayerMask.NameToLayer("Player"));
-            bool anythingHit = Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, maxDistance, mask);
+            int mask = ~(1 << playerLayer);
+            Vector3 direction = playerCamera.transform.forward;
+            direction += new Vector3(Random.Range(0, spreadOffsets.x), Random.Range(0, spreadOffsets.y), 0);
+            bool anythingHit = Physics.Raycast(playerCamera.transform.position, direction, out hit, maxDistance, mask);
 
             if (anythingHit)
             {
@@ -38,10 +41,8 @@ public class Pistol : Gun
                 }
 
                 GameObject effect = Instantiate(_muzzleEffect, hit.point + hit.normal * 0.05f, Quaternion.LookRotation(hit.normal));
-                Debug.Log(hit.point);
                 effect.SetActive(true);
             }
-
         }
     }
 }
