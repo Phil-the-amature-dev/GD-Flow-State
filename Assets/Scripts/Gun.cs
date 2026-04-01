@@ -2,9 +2,13 @@ using UnityEngine;
 
 public abstract class Gun : MonoBehaviour
 {
+    [SerializeField] private GameObject muzzle;
     private float lastShotframe;
     private bool canShoot = true;
     private System.Action runShootMethod;
+    private Animation recoilAnimation;
+
+    
 
     public Camera playerCamera;
     public LayerMask targetLayer;
@@ -16,7 +20,8 @@ public abstract class Gun : MonoBehaviour
     public abstract float damage { get; set; }
 
     public abstract GameObject muzzleEffect { get; set; }
-    public abstract GameObject barrel { get; set; }
+    public abstract GameObject impactEffect { get; set; }
+    
 
 
 
@@ -27,6 +32,7 @@ public abstract class Gun : MonoBehaviour
         targetLayer = GameManager.instance.getTargetLayer;
         playerLayer = GameManager.instance.getPlayerLayer;
         targetTag = GameManager.instance.getTargetTag;
+        recoilAnimation = this.GetComponentInChildren<Animation>();
         runShootMethod = automatic ? automaticFire : semiAutoFire;
         targetLayer = targetLayer & ~(LayerMask.GetMask("Player")); // excludes player layer from the layermask so that it's not detected when commiting a raycast
     }
@@ -35,6 +41,7 @@ public abstract class Gun : MonoBehaviour
     {
         canShoot = (Time.time - lastShotframe > shotDelay);
         runShootMethod();
+        
     }
 
 
@@ -46,6 +53,7 @@ public abstract class Gun : MonoBehaviour
         {
             Shoot();
             lastShotframe = Time.time;
+            recoilAnimation.Play();
         }
        
     }
@@ -56,6 +64,7 @@ public abstract class Gun : MonoBehaviour
         {
             Shoot();
             lastShotframe = Time.time;
+            recoilAnimation.Play();
         }
 
     }

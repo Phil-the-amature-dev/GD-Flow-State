@@ -8,19 +8,22 @@ public class RaycastGun : Gun
     [SerializeField] private float _maxDistance;
     [SerializeField] private float _damage;
     [SerializeField] private GameObject _muzzleEffect;
-    [SerializeField] private GameObject _barrel;
+    [SerializeField] private GameObject _impactEffect;
+    
     [SerializeField] private Vector2 spreadOffsets;
     public override float maxDistance { get; set; }
     public override float damage { get; set; }
     public override GameObject muzzleEffect { get; set; }
-    public override GameObject barrel { get; set; }
+
+    public override GameObject impactEffect { get; set; }
+    
 
     public void Start()
     {
         maxDistance = _maxDistance; 
         damage = _damage;
         muzzleEffect = _muzzleEffect;
-        barrel = _barrel;
+        
         base.Start();
     }
 
@@ -30,7 +33,7 @@ public class RaycastGun : Gun
             RaycastHit hit;
             int mask = ~(1 << playerLayer);
             Vector3 direction = playerCamera.transform.forward;
-            direction += new Vector3(Random.Range(0, spreadOffsets.x), Random.Range(0, spreadOffsets.y), 0);
+            direction += new Vector3(Random.Range(-spreadOffsets.x, spreadOffsets.x), Random.Range(-spreadOffsets.y, spreadOffsets.y), 0);
             bool anythingHit = Physics.Raycast(playerCamera.transform.position, direction, out hit, maxDistance, mask);
 
             if (anythingHit)
@@ -40,10 +43,14 @@ public class RaycastGun : Gun
                     target.TakeDamage(damage);
                 }
 
-                GameObject effect = Instantiate(_muzzleEffect, hit.point + hit.normal * 0.05f, Quaternion.LookRotation(hit.normal));
+                GameObject effect = Instantiate(_impactEffect, hit.point + hit.normal * 0.05f, Quaternion.LookRotation(hit.normal));
+                ParticleSystem muzzleParticle;
+                _muzzleEffect.TryGetComponent<ParticleSystem>(out muzzleParticle);
+                muzzleParticle.Play();
                 effect.SetActive(true);
             }
         }
+
     }
 }
  
