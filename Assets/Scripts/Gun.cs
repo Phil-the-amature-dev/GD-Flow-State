@@ -3,12 +3,14 @@ using UnityEngine;
 public abstract class Gun : MonoBehaviour
 {
     [SerializeField] private GameObject muzzle;
+    [SerializeField] private int gunId;
     private float lastShotframe;
     private bool canShoot = true;
     private System.Action runShootMethod;
     private Animation recoilAnimation;
-
     
+
+    public int GetGunId => gunId;
 
     public Camera playerCamera;
     public LayerMask targetLayer;
@@ -16,6 +18,7 @@ public abstract class Gun : MonoBehaviour
     public string targetTag;
     public float shotDelay;
     public bool automatic;
+    public bool isEnabled;
     public abstract float maxDistance { get; set; }
     public abstract float damage { get; set; }
 
@@ -35,6 +38,15 @@ public abstract class Gun : MonoBehaviour
         recoilAnimation = this.GetComponentInChildren<Animation>();
         runShootMethod = automatic ? automaticFire : semiAutoFire;
         targetLayer = targetLayer & ~(LayerMask.GetMask("Player")); // excludes player layer from the layermask so that it's not detected when commiting a raycast
+    }
+
+    public void OnEnable()
+    {
+        if (!isEnabled)
+        {
+            //WeaponCycler.instance.switchWeapons(WeaponCycler.instance.GetIndex);
+            this.enabled = false;
+        }
     }
 
     public void Update()

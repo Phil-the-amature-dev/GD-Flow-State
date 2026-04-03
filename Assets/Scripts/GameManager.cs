@@ -5,10 +5,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     private Camera playerCamera;
+    [SerializeField] private Gun[] gunList;
 
     private const string TARGET_TAG = "Target";
     private LayerMask TARGET_LAYER;
     private LayerMask PLAYER_LAYER;
+    
 
     public string getTargetTag => TARGET_TAG;
     public int getTargetLayer => TARGET_LAYER;
@@ -34,6 +36,17 @@ public class GameManager : MonoBehaviour
     {
         playerCamera = FindAnyObjectByType<Camera>();
         
+    }
+
+    public void unlockGun(int id)
+    {
+        foreach (Gun gun in gunList)
+        {
+            if (gun.GetGunId == id)
+            {
+                gun.isEnabled = true;
+            }
+        }
     }
 
     // Update is called once per frame
