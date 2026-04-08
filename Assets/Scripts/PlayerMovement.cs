@@ -53,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
 
         //vertical cam rotation
         camRotation -= Input.GetAxis("Mouse Y");
-        camRotation = Mathf.Clamp(camRotation, -20f, 45f);
+        camRotation = Mathf.Clamp(camRotation, -45f, 45f);
         playerCamera.transform.localRotation = Quaternion.Euler(camRotation, 0, 0);
 
         //movement requests

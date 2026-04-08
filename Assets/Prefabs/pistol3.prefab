@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   muzzle: {fileID: 0}
+  gunId: 0
   playerCamera: {fileID: 0}
   targetLayer:
     serializedVersion: 2
@@ -275,6 +276,7 @@ MonoBehaviour:
   targetTag: 
   shotDelay: 0.15
   automatic: 0
+  isEnabled: 0
   _maxDistance: 100
   _damage: 10
   _muzzleEffect: {fileID: 7790655804091032144}
